@@ -22,6 +22,8 @@ print("sigma: ", sigma)
 print("P(k_sr): ", 1 / (sqrt(2 * pi) * 7.6))
 print("sigma: ", 1 / (0.053 * sqrt(2 * pi)))
 
+sigma = 1 / (0.053 * sqrt(2 * pi))
+
 def W(x: float) -> float:
     r1 = 1 / (sqrt(2 * pi) * sigma)
     r2 = exp(-(x - aver)**2 / (2 * sigma**2))
