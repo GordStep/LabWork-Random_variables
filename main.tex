@@ -8,7 +8,6 @@
 \usepackage{graphicx} % Для графики (не обязательно для этой таблицы, но часто используется)
 \usepackage{rotating}
 \usepackage{tabularx}
-\graphicspath{ {./images/} }
 \usepackage{longtable}
 \usepackage{booktabs} % для красивых горизонтальных линий в таблице
 \usepackage{float}    % Для опции [H] для таблиц
@@ -19,18 +18,21 @@
 \usepackage[utf8x]{inputenc} % Включаем поддержку UTF8  
 \usepackage[russian]{babel}  % Включаем пакет для поддержки русского языка  
 
+\graphicspath{ {./images/} }
+
 \newcommand{\myauthor}{Скороходов С.А., Степушов Г.С.}
 \newcommand{\mytitle}{Некоторые законы случайных событий}	
 
 \begin{document}
-	\include{title.tex}
 	
-%	\maketitle
+	\include{source/title.tex}
+
 	\tableofcontents
 	
-	\include{theory.tex}
+	\include{source/theory.tex}
 	
-	\include{practice.tex}
+	\include{source/practice.tex}
 	
-	\include{appendix.tex}
+	\include{source/appendix.tex}
+	
 \end{document}
