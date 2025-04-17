@@ -4,7 +4,7 @@ from numpy import exp, pi, sqrt
 k = 54  # Количество уровней (54 ячейки)
 p = 1 / 54
 
-aver = 26.5
+aver = 27.5
 n = aver / p
 print("n: ", n)
 Dx = aver * (1 - p)

@@ -92,6 +92,9 @@ with PdfPages('../images/graph_1.pdf') as pdf:
     # Настройка основной оси Y
     ax.set_ylabel("Вероятность попадания", fontsize=14)
 
+    ax.set_xlabel(r"$k$", fontsize=14)
+    ax.set_ylabel(r"$P(k), \frac{1}{\text{мм}}$", fontsize=14)
+
     # Устанавливаем шаг для осей
     ax.xaxis.set_major_locator(ticker.MultipleLocator(5))  # Увеличили шаг
     ax.yaxis.set_major_locator(ticker.MultipleLocator(0.005))
