@@ -5,7 +5,7 @@ import matplotlib.ticker as ticker
 from matplotlib.backends.backend_pdf import PdfPages
 
 # Устанавливаем шрифт Times New Roman
-plt.rcParams['font.family'] = 'Times New Roman'
+plt.rcParams['font.family'] = 'CMU Serif'
 plt.rcParams['mathtext.fontset'] = 'cm'
 plt.rcParams['font.size'] = 14
 plt.rcParams['axes.titlesize'] = 16
@@ -25,14 +25,18 @@ def sci_notation_formatter(x, pos):
     return f"${rounding(x,0)}$".replace('.', ',')
 
 # Функция для форматирования чисел
-def sci_notation_formatter_y(x, pos = 2):
+def sci_notation_formatter_y(x, pos = 3):
     coeff, exp = f"{x:.1e}".split('e')
     coeff = coeff.replace('.', ',')
     exp = int(exp)
-    return f"{rounding(x, pos)}".replace('.', ',')
+    x = "{:.4f}".format(x)
+    return f"{x}".replace('.', ',')
 
 
-with open("data_n.txt") as file:
+
+
+
+with open("data_n_2.txt") as file:
     content = file.read()
     data = []
 
@@ -67,51 +71,55 @@ print(ydata)
 print(len(xdata), len(ydata))
 
 # Создание PDF
-with PdfPages('1.pdf') as pdf:
-    fig, ax = plt.subplots()  # Увеличили ширину
-    #ax.axvline(y=0.053, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
-    #ax.axvline(y=0.02, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
+with PdfPages('../images/graph_1.pdf') as pdf:
+    fig, ax = plt.subplots(figsize=(14, 9))  # Увеличили ширину
 
     mp_k:float = max(ydata)
     k = mp_k / np.sqrt(np.e)
 
-    data_y = [i for i in range(0, 6)]
-    data_y.append(mp_k * 100)
-    data_y.append(k * 100)
+    data_y = [i for i in range(0, 56, 5)]
+    data_y.append(mp_k * 1000)
+    data_y.append(k * 1000)
+
     # Вертикальные и горизонтальные линии
     for x in range(0, 56, 5):
         ax.axvline(x=x, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
     for y in data_y:
-        ax.axhline(y=y / 100, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
+        ax.axhline(y=y / 1000, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
 
-
-
-
-    # Настройка основной оси X (снизу)
+    # Настройка основной оси X
     ax.set_xlabel("Номер ячейки", fontsize=14)
+    # Настройка основной оси Y
     ax.set_ylabel("Вероятность попадания", fontsize=14)
-
-
 
     # Устанавливаем шаг для осей
     ax.xaxis.set_major_locator(ticker.MultipleLocator(5))  # Увеличили шаг
-    #ax.yaxis.set_major_locator(ticker.MultipleLocator(0.01))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(0.005))
 
-    mp_k = float(sci_notation_formatter_y(mp_k, 4).replace(',', '.'))
-    k = float(sci_notation_formatter_y(k, 4).replace(',', '.'))
-    y = sorted([0, 0.01, 0.02, 0.03, 0.04, 0.05, mp_k, k])
+    #mp_k = float(sci_notation_formatter_y(mp_k).replace(',', '.'))
+    #k = float(sci_notation_formatter_y(k).replace(',', '.'))
+    y = [i / 1000 for i in range(0, 56, 5)]
+    y.append(mp_k)
+    y.append(k)
+    y = sorted(y)
 
-    ax.xaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter))
-    ax.yaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter_y))
+    #y = [sci_notation_formatter_y(i) for i in y]
+
+    ax.set_ylim(0, 0.055)
+    ax.set_xlim(0, 55)
+
+
 
     plt.yticks(ticks=y, labels=y)
 
-    plt.tight_layout(pad=0.1)  # Увеличенный отступ
-    pdf.savefig(fig, bbox_inches='tight', dpi=300)
-
     plt.scatter(xdata, ydata)
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter_y))
 
     plt.plot(xdata, thdata, 'k--', linewidth=1)
+
+    plt.tight_layout(pad=0.2)  # Увеличенный отступ
+    pdf.savefig(fig, bbox_inches='tight', dpi=300)
     plt.show()
 
 
