@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
-from numpy import exp, pi, sqrt, e
+from numpy import exp, pi, sqrt, e, sin
 import matplotlib.ticker as ticker
 from matplotlib.backends.backend_pdf import PdfPages
+
+from main2 import P_theory
 
 # Устанавливаем шрифт Times New Roman
 plt.rcParams['font.family'] = 'CMU Serif'
@@ -68,14 +70,7 @@ print(len(v_y), len(xdata))
 with PdfPages('../images/graph_3.pdf') as pdf:
     fig, ax = plt.subplots(figsize=(14, 9))  # Увеличили ширину
 
-    data_y = [i / 100 for i in range(0, 101, 5)]
-    data_y.append(0.11)
 
-    # Вертикальные и горизонтальные линии
-    for x in range(510 - 50, 510 + 51, 5):
-        ax.axvline(x=x, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
-    for y in data_y:
-        ax.axhline(y=y, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
 
     # Настройка основной оси X
     ax.set_xlabel("Номер ячейки", fontsize=14)
@@ -100,7 +95,11 @@ with PdfPages('../images/graph_3.pdf') as pdf:
     ax.set_ylim(0, 1.05)
     ax.set_xlim(510 - 51, 510 + 51)
 
-
+    R_theory = np.linspace(510 - 50, 510 + 50, 500)
+    #P_theory = 0.718673 * sin(0.0643134 * R_theory - 1.51821) + 0.532803
+    #P_theory = 0.97689 / (1 + exp(-(0.273963 * R_theory-139.77149)))
+    P_theory = 0.990454 / (1 + exp(-(0.307085 * R_theory - 156.73791))) + 0.01
+    plt.plot(R_theory, P_theory, 'k--', linewidth=1)
 
     P_theory = [ (ydata[i] - ydata[i - 1]) / (xdata[i] - xdata[i - 1]) for i in range(1, len(ydata))]
     print("y: ", len(P_theory), "x: ", len(xdata))
@@ -114,6 +113,16 @@ with PdfPages('../images/graph_3.pdf') as pdf:
     #plt.plot([xdata[i] for i in range(0, len(xdata) - 1)], P_theory, 'k--', linewidth=1)
 
     plt.plot(xdata, v_y)
+    plt.legend((r"$\frac{0,990454}{1 + \exp{-(0.307085 * x - 156.73791)}}$", 'Интегральная функция распределения'), loc='upper left', fontsize='medium', frameon=True)
+
+    data_y = [i / 100 for i in range(0, 101, 5)]
+    data_y.append(0.11)
+
+    # Вертикальные и горизонтальные линии
+    for x in range(510 - 50, 510 + 51, 5):
+        ax.axvline(x=x, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
+    for y in data_y:
+        ax.axhline(y=y, color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
 
     plt.tight_layout(pad=0.2)  # Увеличенный отступ
     pdf.savefig(fig, bbox_inches='tight', dpi=300)
@@ -188,16 +197,16 @@ with PdfPages('../images/graph_4.pdf') as pdf:
 
     print(y_2(520))
 
-    R_theory = np.linspace(510 - 50, 510 + 50, 500)
-    P_theory = 1 / (sqrt(2 * pi) * sigma) * exp(-(R_theory - R) ** 2 / (2 * sigma ** 2))
+    #R_theory = np.linspace(510 - 50, 510 + 50, 500)
+    #P_theory = 1 / (sqrt(2 * pi) * sigma) * exp(-(R_theory - R) ** 2 / (2 * sigma ** 2))
 
-    plt.plot(R_theory, P_theory, 'k--', linewidth = 2)
+    #plt.plot(R_theory, P_theory, 'k--', linewidth = 2)
 
 
 
     plt.plot([x_1(0), 510, x_2(0)], [0, 0.11, 0], color='gray')
 
-    plt.legend(('Экспериментальные данные', 'Плотность вероятностей', 'Теоретическая кривая', 'Вспомогательные прямые', ''), loc='upper right', fontsize='medium', frameon=True)
+    plt.legend(('Экспериментальные данные', 'Плотность вероятностей', 'Вспомогательные прямые', ''), loc='upper right', fontsize='medium', frameon=True)
 
 
     data_y = [i / 100 for i in range(0, 15)]

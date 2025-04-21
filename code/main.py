@@ -22,7 +22,7 @@ def sci_notation_formatter(x, pos):
     coeff, exp = f"{x:.1e}".split('e')
     coeff = coeff.replace('.', ',')
     exp = int(exp)
-    return f"${rounding(x,0)}$".replace('.', ',')
+    return f"{rounding(x,2)}".replace('.', ',')
 
 # Функция для форматирования чисел
 def sci_notation_formatter_y(x, pos = 3):
@@ -66,7 +66,10 @@ print(sum_count)
 ydata = [el / sum_count for el in data]
 xdata = [x for x in range(1, 55)]
 
-print("sum ver: ", sum(ydata))
+print("max ver:", max(ydata))
+print("k_p:", xdata[ydata.index(max(ydata))])
+
+print("sum ver:", sum(ydata))
 print(ydata)
 print(len(xdata), len(ydata))
 
