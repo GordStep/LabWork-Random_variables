@@ -73,6 +73,13 @@ print("sum ver:", sum(ydata))
 print(ydata)
 print(len(xdata), len(ydata))
 
+
+
+def W(x: float) -> float:
+    r1 = 1 / (sqrt(2 * pi) * sigma)
+    r2 = exp(-(x - aver)**2 / (2 * sigma**2))
+    return r1 * r2
+
 # Создание PDF
 with PdfPages('../images/graph_1.pdf') as pdf:
     fig, ax = plt.subplots(figsize=(14, 9))  # Увеличили ширину

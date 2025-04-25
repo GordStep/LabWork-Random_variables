@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
-from numpy import exp, pi, sqrt, e, sin
+from numpy import exp, pi, sqrt, e, sin, log
 import matplotlib.ticker as ticker
 from matplotlib.backends.backend_pdf import PdfPages
-
-from main2 import P_theory
 
 # Устанавливаем шрифт Times New Roman
 plt.rcParams['font.family'] = 'CMU Serif'
@@ -34,6 +32,13 @@ def sci_notation_formatter_y(x, pos = 3):
     exp = int(exp)
     x = "{:.3f}".format(x)
     return f"{x}".replace('.', ',')
+
+def f_ap(x):
+    sigma = 6.9
+    #return 0.5 * (1 + np.sign(x- 510) * np.sqrt(1 - np.exp(-0.63 * ((x - 510) / sigma) ** 2)))
+    #return 0.990454 / (1 + exp(-(0.307085 * x - 156.73791))) + 0.01
+    return 0.980974 / (1 + exp(-(0.265563 * x - 135.5868))) / 0.98
+    #return -0.00002365873 * x**3 + 0.03621157 * x**2 - 18.43304 * x + 3121.01963
 
 with open("data.txt") as file:
     content = file.read()
@@ -98,8 +103,11 @@ with PdfPages('../images/graph_3.pdf') as pdf:
     R_theory = np.linspace(510 - 50, 510 + 50, 500)
     #P_theory = 0.718673 * sin(0.0643134 * R_theory - 1.51821) + 0.532803
     #P_theory = 0.97689 / (1 + exp(-(0.273963 * R_theory-139.77149)))
-    P_theory = 0.990454 / (1 + exp(-(0.307085 * R_theory - 156.73791))) + 0.01
-    plt.plot(R_theory, P_theory, 'k--', linewidth=1)
+    #P_theory = 0.990454 / (1 + exp(-(0.307085 * R_theory - 156.73791))) + 0.01
+    #P_theory = 0.987829 / (1 + exp(-(0.273956 * R_theory - 139.76023))) + 0.01
+    P_theory = f_ap(R_theory)
+
+    plt.plot(R_theory, P_theory, 'k--', linewidth=2)
 
     P_theory = [ (ydata[i] - ydata[i - 1]) / (xdata[i] - xdata[i - 1]) for i in range(1, len(ydata))]
     print("y: ", len(P_theory), "x: ", len(xdata))
@@ -111,8 +119,11 @@ with PdfPages('../images/graph_3.pdf') as pdf:
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter_y))
 
     #plt.plot([xdata[i] for i in range(0, len(xdata) - 1)], P_theory, 'k--', linewidth=1)
+    x_new = R_theory
+    sigma = 6
+    f_a = 0.5 * (1 + np.sign(x_new - 510) * np.sqrt(1 - np.exp(-0.63 * ((x_new - 510) / sigma) ** 2)))
 
-    plt.plot(xdata, v_y)
+    plt.plot(x_new, f_a)
     plt.legend((r"$\frac{0,990454}{1 + \exp{-(0.307085 * x - 156.73791)}}$", 'Интегральная функция распределения'), loc='upper left', fontsize='medium', frameon=True)
 
     data_y = [i / 100 for i in range(0, 101, 5)]
@@ -156,12 +167,13 @@ with PdfPages('../images/graph_4.pdf') as pdf:
     ax.set_ylim(0, 0.12)
     ax.set_xlim(510 - 51, 510 + 51)
 
-    for i in range(1, len(ydata)):
-        print("y: ", v_y[i], "-", v_y[i -1],  "x: ", xdata[i], "-", xdata[i - 1], "ydata: ", ydata[i], end=" ")
-        print("delta: ", (v_y[i] - v_y[i - 1]) / (xdata[i] - xdata[i - 1]))
+    x = np.linspace(510 - 51, 510 + 51, 1000)
+    #for i in range(1, len(x)):
+        #print("y: ", f_ap(x[i]), "-", f_ap(x[i - 1]),  "x: ", x[i], "-", x[i - 1], end=" ")
+        #print("delta: ", (f_ap(x[i]) - f_ap(x[i - 1])) / (x[i] - x[i - 1]))
 
-    P_theory = [(v_y[i] - v_y[i - 1]) / (xdata[i] - xdata[i - 1]) for i in range(1, len(ydata))]
-    print("y: ", len(P_theory), "x: ", len(xdata))
+    P_theory = [(f_ap(x[i]) - f_ap(x[i - 1])) / (x[i] - x[i - 1]) for i in range(1, len(x))]
+    print("y: ", len(P_theory), "x: ", len(x))
     print(P_theory)
     plt.yticks(ticks=y, labels=y)
 
@@ -171,7 +183,7 @@ with PdfPages('../images/graph_4.pdf') as pdf:
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter_y))
 
     #plt.scatter([xdata[i] for i in range(1, len(xdata))], P_theory)
-    plt.plot([xdata[i] for i in range(1, len(xdata))], P_theory)
+    plt.plot([x[i] for i in range(1, len(x))], P_theory)
 
     R = 510
     m_ind = xdata.index(R)
@@ -222,6 +234,9 @@ with PdfPages('../images/graph_4.pdf') as pdf:
     plt.tight_layout(pad=0.2)  # Увеличенный отступ
     pdf.savefig(fig, bbox_inches='tight', dpi=300)
     plt.show()
+
+for i in range(0, len(v_y)):
+    print(xdata[i], v_y[i])
 
 [print(sci_notation_formatter_y(el), end=" ") for el in v_y]
 print()
