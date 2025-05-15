@@ -88,7 +88,7 @@ with PdfPages('../images/graph_3.pdf') as pdf:
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter))
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(sci_notation_formatter_y))
 
-    plt.legend(("Сигмойда", 'Интегральная функция распределения'), loc='upper left', fontsize='medium', frameon=True)
+    plt.legend(("Практические данные", 'Интегральная функция распределения'), loc='upper left', fontsize='medium', frameon=True)
 
     data_y = [i / 100 for i in range(0, 101, 5)]
     data_y.append(0.11)
