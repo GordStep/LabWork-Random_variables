@@ -290,6 +290,7 @@ TSWLatexianTemp*
 ./auto/*
 *.el
 
+
 # expex forward references with \gathertags
 *-tags.tex
 
